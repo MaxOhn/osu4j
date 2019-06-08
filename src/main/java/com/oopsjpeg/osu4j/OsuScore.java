@@ -10,47 +10,55 @@ import com.oopsjpeg.osu4j.util.Utility;
 import java.time.ZonedDateTime;
 
 public class OsuScore extends OsuElement {
-	private final int beatmapID;
-	private final LazilyLoaded<OsuBeatmap> beatmap;
-	private final int score;
-	private final int maxcombo;
-	private final int count300;
-	private final int count100;
-	private final int count50;
-	private final int countmiss;
-	private final int countkatu;
-	private final int countgeki;
-	private final boolean perfect;
-	private final GameMod[] enabledMods;
-	private final int userID;
-	private final LazilyLoaded<OsuUser> user;
-	private final ZonedDateTime date;
-	private final String rank;
-	private final float pp;
+
+	private int beatmapID = -1;
+	private LazilyLoaded<OsuBeatmap> beatmap = null;
+	private int score = -1;
+	private int maxcombo = -1;
+	private int count300 = -1;
+	private int count100 = -1;
+	private int count50 = -1;
+	private int countmiss = -1;
+	private int countkatu = -1;
+	private int countgeki = -1;
+	private boolean perfect = false;
+	private GameMod[] enabledMods = new GameMod[0];
+	private int userID = -1;
+	private String username = "";
+	private LazilyLoaded<OsuUser> user = null;
+	private ZonedDateTime date = null;
+	private String rank = "";
+	private float pp = 0;
+
+	public OsuScore(Osu api) {
+		super(api);
+	}
 
 	public OsuScore(Osu api, JsonObject obj) {
 		super(api);
-		beatmapID = obj.get("beatmap_id").getAsInt();
-		score = obj.get("score").getAsInt();
-		maxcombo = obj.get("maxcombo").getAsInt();
-		count300 = obj.get("count300").getAsInt();
-		count100 = obj.get("count100").getAsInt();
-		count50 = obj.get("count50").getAsInt();
-		countmiss = obj.get("countmiss").getAsInt();
-		countkatu = obj.get("countkatu").getAsInt();
-		countgeki = obj.get("countgeki").getAsInt();
-		perfect = obj.get("perfect").getAsInt() == 1;
-		enabledMods = GameMod.get(obj.get("enabled_mods").getAsLong());
-		userID = obj.get("user_id").getAsInt();
-		date = Utility.parseDate(obj.get("date").getAsString());
-		rank = obj.get("rank").getAsString();
-		pp = obj.get("pp").getAsFloat();
+		if (obj.has("beatmap_id")) beatmapID = obj.get("beatmap_id").getAsInt();
+		if (obj.has("score")) score = obj.get("score").getAsInt();
+		if (obj.has("maxcombo")) maxcombo = obj.get("maxcombo").getAsInt();
+		if (obj.has("count300")) count300 = obj.get("count300").getAsInt();
+		if (obj.has("count100")) count100 = obj.get("count100").getAsInt();
+		if (obj.has("count50")) count50 = obj.get("count50").getAsInt();
+		if (obj.has("countmiss")) countmiss = obj.get("countmiss").getAsInt();
+		if (obj.has("countkatu")) countkatu = obj.get("countkatu").getAsInt();
+		if (obj.has("countgeki")) countgeki = obj.get("countgeki").getAsInt();
+		if (obj.has("perfect")) perfect = obj.get("perfect").getAsInt() == 1;
+		if (obj.has("enabled_mods")) enabledMods = GameMod.get(obj.get("enabled_mods").getAsLong());
+		if (obj.has("user_id")) userID = obj.get("user_id").getAsInt();
+		if (obj.has("date")) date = Utility.parseDate(obj.get("date").getAsString());
+		if (obj.has("rank")) rank = obj.get("rank").getAsString();
+		if (obj.has("pp")) pp = obj.get("pp").isJsonNull() ? 0 : obj.get("pp").getAsFloat();
 
-		beatmap = getAPI().beatmaps.getAsQuery(new EndpointBeatmaps.ArgumentsBuilder()
+		if (beatmapID != -1)
+			beatmap = getAPI().beatmaps.getAsQuery(new EndpointBeatmaps.ArgumentsBuilder()
 				.setBeatmapID(beatmapID).build())
 				.asLazilyLoaded().map(list -> list.get(0));
 
-		user = getAPI().users.getAsQuery(new EndpointUsers.ArgumentsBuilder(userID).build())
+		if (userID != -1)
+			user = getAPI().users.getAsQuery(new EndpointUsers.ArgumentsBuilder(userID).build())
 				.asLazilyLoaded();
 	}
 
@@ -69,6 +77,7 @@ public class OsuScore extends OsuElement {
 		this.perfect = other.perfect;
 		this.enabledMods = other.enabledMods;
 		this.userID = other.userID;
+		this.username = other.username;
 		this.user = other.user;
 		this.date = other.date;
 		this.rank = other.rank;
@@ -131,6 +140,10 @@ public class OsuScore extends OsuElement {
 		return userID;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
 	public LazilyLoaded<OsuUser> getUser() {
 		return user;
 	}
@@ -145,5 +158,77 @@ public class OsuScore extends OsuElement {
 
 	public float getPp() {
 		return pp;
+	}
+
+	public void setBeatmapID(int beatmapID) {
+		this.beatmapID = beatmapID;
+	}
+
+	public void setBeatmap(LazilyLoaded<OsuBeatmap> beatmap) {
+		this.beatmap = beatmap;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public void setMaxcombo(int maxcombo) {
+		this.maxcombo = maxcombo;
+	}
+
+	public void setCount300(int count300) {
+		this.count300 = count300;
+	}
+
+	public void setCount100(int count100) {
+		this.count100 = count100;
+	}
+
+	public void setCount50(int count50) {
+		this.count50 = count50;
+	}
+
+	public void setCountmiss(int countmiss) {
+		this.countmiss = countmiss;
+	}
+
+	public void setCountkatu(int countkatu) {
+		this.countkatu = countkatu;
+	}
+
+	public void setCountgeki(int countgeki) {
+		this.countgeki = countgeki;
+	}
+
+	public void setPerfect(boolean perfect) {
+		this.perfect = perfect;
+	}
+
+	public void setEnabledMods(GameMod[] enabledMods) {
+		this.enabledMods = enabledMods;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setUser(LazilyLoaded<OsuUser> user) {
+		this.user = user;
+	}
+
+	public void setDate(ZonedDateTime date) {
+		this.date = date;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
+	}
+
+	public void setPp(float pp) {
+		this.pp = pp;
 	}
 }
