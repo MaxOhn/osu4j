@@ -12,35 +12,39 @@ import java.net.URL;
 import java.time.ZonedDateTime;
 
 public class OsuBeatmap extends OsuElement {
-	private final ApprovalState approved;
-	private final ZonedDateTime approvedDate;
-	private final ZonedDateTime lastUpdate;
-	private final String artist;
-	private final int beatmapID;
-	private final int beatmapSetID;
-	private final LazilyLoaded<OsuBeatmapSet> beatmapSet;
-	private final float bpm;
-	private final String creatorName;
-	private final LazilyLoaded<OsuUser> creator;
-	private final float difficultyrating;
-	private final float diffSize;
-	private final float diffOverall;
-	private final float diffApproach;
-	private final float diffDrain;
-	private final int hitLength;
-	private final String source;
-	private final Genre genre;
-	private final Language language;
-	private final String title;
-	private final int totalLength;
-	private final String version;
-	private final String fileMD5;
-	private final GameMode mode;
-	private final String[] tags;
-	private final int favouriteCount;
-	private final int playcount;
-	private final int passcount;
-	private final int maxCombo;
+	private ApprovalState approved;
+	private ZonedDateTime approvedDate;
+	private ZonedDateTime lastUpdate;
+	private String artist;
+	private int beatmapID;
+	private int beatmapSetID;
+	private LazilyLoaded<OsuBeatmapSet> beatmapSet;
+	private float bpm;
+	private String creatorName;
+	private LazilyLoaded<OsuUser> creator;
+	private float difficultyrating;
+	private float diffSize;
+	private float diffOverall;
+	private float diffApproach;
+	private float diffDrain;
+	private int hitLength;
+	private String source;
+	private Genre genre;
+	private Language language;
+	private String title;
+	private int totalLength;
+	private String version;
+	private String fileMD5;
+	private GameMode mode;
+	private String[] tags;
+	private int favouriteCount;
+	private int playcount;
+	private int passcount;
+	private int maxCombo;
+
+	public OsuBeatmap(Osu api) {
+		super(api);
+	}
 
 	public OsuBeatmap(Osu api, JsonObject obj) {
 		super(api);
@@ -52,7 +56,7 @@ public class OsuBeatmap extends OsuElement {
 		beatmapSetID = obj.get("beatmapset_id").getAsInt();
 		bpm = obj.get("bpm").getAsFloat();
 		creatorName = obj.get("creator").getAsString();
-		difficultyrating = obj.get("difficultyrating").getAsFloat();
+		difficultyrating = obj.get("difficultyrating").isJsonNull() ? 0 : obj.get("difficultyrating").getAsFloat();
 		diffSize = obj.get("diff_size").getAsFloat();
 		diffOverall = obj.get("diff_overall").getAsFloat();
 		diffApproach = obj.get("diff_approach").getAsFloat();
@@ -64,13 +68,13 @@ public class OsuBeatmap extends OsuElement {
 		title = obj.get("title").getAsString();
 		totalLength = obj.get("total_length").getAsInt();
 		version = obj.get("version").getAsString();
-		fileMD5 = obj.get("file_md5").getAsString();
+		fileMD5 = obj.get("file_md5").isJsonNull() ? null : obj.get("file_md5").getAsString();
 		mode = GameMode.fromID(obj.get("mode").getAsInt());
 		tags = obj.get("tags").getAsString().split(" ");
 		favouriteCount = obj.get("favourite_count").getAsInt();
 		playcount = obj.get("playcount").getAsInt();
 		passcount = obj.get("passcount").getAsInt();
-		maxCombo = obj.get("max_combo").getAsInt();
+		maxCombo = obj.get("max_combo").isJsonNull() ? 0 : obj.get("max_combo").getAsInt();
 
 		beatmapSet = getAPI().beatmapSets.getAsQuery(new EndpointBeatmapSet.Arguments(beatmapSetID))
 				.asLazilyLoaded();
@@ -233,6 +237,122 @@ public class OsuBeatmap extends OsuElement {
 
 	public URL getURL() throws MalformedURLException {
 		return new URL(Osu.BASE_URL + "/b/" + beatmapID);
+	}
+
+	public void setApproved(ApprovalState approved) {
+		this.approved = approved;
+	}
+
+	public void setApprovedDate(ZonedDateTime approvedDate) {
+		this.approvedDate = approvedDate;
+	}
+
+	public void setLastUpdate(ZonedDateTime lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
+
+	public void setBeatmapID(int beatmapID) {
+		this.beatmapID = beatmapID;
+	}
+
+	public void setBeatmapSetID(int beatmapSetID) {
+		this.beatmapSetID = beatmapSetID;
+	}
+
+	public void setBeatmapSet(LazilyLoaded<OsuBeatmapSet> beatmapSet) {
+		this.beatmapSet = beatmapSet;
+	}
+
+	public void setBpm(float bpm) {
+		this.bpm = bpm;
+	}
+
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
+	}
+
+	public void setCreator(LazilyLoaded<OsuUser> creator) {
+		this.creator = creator;
+	}
+
+	public void setDifficultyrating(float difficultyrating) {
+		this.difficultyrating = difficultyrating;
+	}
+
+	public void setDiffSize(float diffSize) {
+		this.diffSize = diffSize;
+	}
+
+	public void setDiffOverall(float diffOverall) {
+		this.diffOverall = diffOverall;
+	}
+
+	public void setDiffApproach(float diffApproach) {
+		this.diffApproach = diffApproach;
+	}
+
+	public void setDiffDrain(float diffDrain) {
+		this.diffDrain = diffDrain;
+	}
+
+	public void setHitLength(int hitLength) {
+		this.hitLength = hitLength;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setTotalLength(int totalLength) {
+		this.totalLength = totalLength;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setFileMD5(String fileMD5) {
+		this.fileMD5 = fileMD5;
+	}
+
+	public void setMode(GameMode mode) {
+		this.mode = mode;
+	}
+
+	public void setTags(String[] tags) {
+		this.tags = tags;
+	}
+
+	public void setFavouriteCount(int favouriteCount) {
+		this.favouriteCount = favouriteCount;
+	}
+
+	public void setPlaycount(int playcount) {
+		this.playcount = playcount;
+	}
+
+	public void setPasscount(int passcount) {
+		this.passcount = passcount;
+	}
+
+	public void setMaxCombo(int maxCombo) {
+		this.maxCombo = maxCombo;
 	}
 
 	@Override
