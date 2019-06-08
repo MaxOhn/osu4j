@@ -223,21 +223,23 @@ public class OsuUser extends OsuElement {
 
 	private class Event extends OsuElement {
 		private final String displayHTML;
-		private final int beatmapID;
-		private final LazilyLoaded<OsuBeatmap> beatmap;
-		private final int beatmapSetID;
-		private final LazilyLoaded<OsuBeatmapSet> beatmapSet;
+		private int beatmapID;
+		private LazilyLoaded<OsuBeatmap> beatmap;
+		private int beatmapSetID;
+		private LazilyLoaded<OsuBeatmapSet> beatmapSet;
 
 		public Event(JsonObject obj) {
 			super(OsuUser.this.getAPI());
 			displayHTML = obj.get("display_html").getAsString();
-			beatmapID = obj.get("beatmap_id").getAsInt();
-			beatmap = getAPI().beatmaps.getAsQuery(new EndpointBeatmaps.ArgumentsBuilder()
-					.setBeatmapID(beatmapID).build())
-					.asLazilyLoaded().map(list -> list.get(0));
-			beatmapSetID = obj.get("beatmapset_id").getAsInt();
-			beatmapSet = getAPI().beatmapSets.getAsQuery(new EndpointBeatmapSet.Arguments(beatmapSetID))
-					.asLazilyLoaded();
+			if (!obj.get("beatmap_id").isJsonNull()) {
+				beatmapID = obj.get("beatmap_id").getAsInt();
+				beatmap = getAPI().beatmaps.getAsQuery(new EndpointBeatmaps.ArgumentsBuilder()
+						.setBeatmapID(beatmapID).build())
+						.asLazilyLoaded().map(list -> list.get(0));
+				beatmapSetID = obj.get("beatmapset_id").getAsInt();
+				beatmapSet = getAPI().beatmapSets.getAsQuery(new EndpointBeatmapSet.Arguments(beatmapSetID))
+						.asLazilyLoaded();
+			}
 		}
 
 		public Event(Event other) {
