@@ -1,5 +1,6 @@
 package com.oopsjpeg.osu4j.backend;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.google.gson.*;
 import com.oopsjpeg.osu4j.exception.MalformedRequestException;
 import com.oopsjpeg.osu4j.exception.OsuAPIException;
@@ -33,7 +34,7 @@ public class Osu {
 	public final EndpointUserBests userBests = new EndpointUserBests(access);
 	public final EndpointUserRecents userRecents = new EndpointUserRecents(access);
 	public final EndpointUsers users = new EndpointUsers(access);
-	private RateLimiter limiter = new RateLimiter(DEFAULT_LIMIT);
+	private RateLimiter limiter = RateLimiter.create(2);
 
 	private Osu(OsuToken token) {
 		this.token = token;
@@ -102,8 +103,12 @@ public class Osu {
 		}
 	}
 
+	public void setRateLimiter(double requestsPerSecond) {
+		limiter.setRate(requestsPerSecond);
+	}
+
 	private void waitForFreeTicket() throws OsuRateLimitException {
-		limiter.getOrWaitForTicket();
+		limiter.acquire();
 	}
 
 	private String urlEncodeArgument(String value) {
