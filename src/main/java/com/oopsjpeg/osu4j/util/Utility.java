@@ -2,7 +2,6 @@ package com.oopsjpeg.osu4j.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;

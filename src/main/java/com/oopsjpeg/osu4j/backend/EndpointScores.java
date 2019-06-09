@@ -32,7 +32,7 @@ public class EndpointScores implements Endpoint<Arguments, List<OsuScore>> {
 	}
 
 	public static class Arguments {
-		private Map<String, String> arguments;
+		private final Map<String, String> arguments;
 
 		public Arguments(ArgumentsBuilder builder) {
 			Objects.requireNonNull(builder);
@@ -57,7 +57,7 @@ public class EndpointScores implements Endpoint<Arguments, List<OsuScore>> {
 		private int beatmapID;
 		private Optional<UserInfo> user = Optional.empty();
 		private Optional<GameMode> mode = Optional.empty();
-		private Optional<EnumSet<GameMod>> mods = Optional.empty();
+		private final Optional<EnumSet<GameMod>> mods = Optional.empty();
 		private OptionalInt limit = OptionalInt.empty();
 
 		public ArgumentsBuilder(int beatmapID) {
